@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import dotenv from 'dotenv';
+import StudentCollection from './db/models/Student.js';
 
 // console.log(process.env);
 
@@ -21,9 +22,32 @@ export const startServer = () => {
     }),
   );
 
-  app.get('/', (req, res) => {
+  app.get('/contacts', async (req, res) => {
+    const data = await StudentCollection.find();
     res.json({
-      message: 'Welcome to server',
+      status: 200,
+      message: 'Successfully found contacts!',
+      data,
+    });
+  });
+
+  app.get('/contacts/:contactId', async (req, res) => {
+    // console.log(req.params);
+
+    const contactId = req.params.contactId;
+    const data = await StudentCollection.findById(contactId);
+
+    if (!data) {
+      return res.status(404).json({
+        status: 404,
+        message: `Student with ${contactId} not found`,
+      });
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully find student with id:${contactId}`,
+      data,
     });
   });
 

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import contactsRouter from './routers/contactsRouts.js';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
+import { errorHeandler } from './middleware/errorHandler.js';
 
 // console.log(process.env);
 
@@ -20,6 +21,8 @@ export const startServer = () => {
   app.use('/contacts', contactsRouter);
 
   app.use(notFoundHandler);
+
+  app.use(errorHeandler);
 
   const port = Number(process.env.PORT) || 3000;
 

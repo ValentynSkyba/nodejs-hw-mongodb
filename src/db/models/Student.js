@@ -25,7 +25,7 @@ const studentSchema = new Schema(
       default: 'personal',
     },
   },
-  { timestamps: true },
+  { versionKey: false, timestamps: true },
 );
 
 const StudentCollection = model('student', studentSchema);

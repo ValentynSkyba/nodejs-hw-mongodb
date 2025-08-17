@@ -1,4 +1,9 @@
-import { getContacts, getContactByID } from '../services/contactServices.js';
+import {
+  getContacts,
+  getContactByID,
+  addContact,
+  updateContactByID,
+} from '../services/contactServices.js';
 import createHttpError from 'http-errors';
 
 export const getContactController = async (req, res) => {
@@ -31,6 +36,30 @@ export const getContactByIDController = async (req, res) => {
   res.json({
     status: 200,
     message: `Successfully find student with id:${contactId}`,
+    data,
+  });
+};
+
+export const addContactController = async (req, res) => {
+  //
+  const data = await addContact(req.body);
+
+  res
+    .status(201)
+    .json({ status: 201, message: 'Successfully add contact', data });
+};
+
+export const upsertContactByIDController = async (req, res) => {
+  const { id } = req.params;
+  const { isNew, data } = await updateContactByID(id, req.body, {
+    upsert: true,
+  });
+
+  const status = isNew ? 201 : 200;
+
+  res.status(status).json({
+    status,
+    message: `Successfully upsert contact with id=${id}`,
     data,
   });
 };

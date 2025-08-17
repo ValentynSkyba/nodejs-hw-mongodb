@@ -20,3 +20,6 @@ export const updateContactByID = async (_id, payload, options = {}) => {
 
   return { isNew, data: result.value };
 };
+
+export const deleteContactByID = (_id) =>
+  StudentCollection.findByIdAndDelete(_id);

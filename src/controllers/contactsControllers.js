@@ -3,6 +3,7 @@ import {
   getContactByID,
   addContact,
   updateContactByID,
+  deleteContactByID,
 } from '../services/contactServices.js';
 import createHttpError from 'http-errors';
 
@@ -62,4 +63,29 @@ export const upsertContactByIDController = async (req, res) => {
     message: `Successfully upsert contact with id=${id}`,
     data,
   });
+};
+
+export const patchContactByIDController = async (req, res) => {
+  const { id } = req.params;
+  const result = await updateContactByID(id, req.body);
+
+  if (!result) {
+    throw createHttpError(404, `Student with ${id} not found`);
+  }
+
+  res.json({
+    status: 200,
+    message: `Successfully update contact with id=${id}`,
+    data: result.data,
+  });
+};
+
+export const deleteContactByIDController = async (req, res) => {
+  const { id } = req.params;
+  const data = await deleteContactByID(id);
+  if (!data) {
+    throw createHttpError(404, `Student with ${id} not found`);
+  }
+
+  res.status(204).send();
 };

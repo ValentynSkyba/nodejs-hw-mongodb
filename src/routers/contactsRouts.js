@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import createHttpError from 'http-errors';
 import {
   getContactController,
   getContactByIDController,
@@ -9,18 +10,45 @@ import {
 } from '../controllers/contactsControllers.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
+import {
+  contactAddSchema,
+  contactUpdateSchema,
+} from '../validation/contactsSchemas.js';
+
+import { validateBody } from '../middleware/validateBody.js';
+
+import { isVailidID } from '../middleware/isVailidID.js';
+
 const contactsRouter = Router();
 
 contactsRouter.get('/', getContactController);
 
-contactsRouter.get('/:contactId', ctrlWrapper(getContactByIDController));
+contactsRouter.get('/:id', isVailidID, ctrlWrapper(getContactByIDController));
 
-contactsRouter.post('/', ctrlWrapper(addContactController));
+contactsRouter.post(
+  '/',
+  validateBody(contactAddSchema),
+  ctrlWrapper(addContactController),
+);
 
-contactsRouter.put('/:id', ctrlWrapper(upsertContactByIDController));
+contactsRouter.put(
+  '/:id',
+  isVailidID,
+  validateBody(contactAddSchema),
+  ctrlWrapper(upsertContactByIDController),
+);
 
-contactsRouter.patch('/:id', ctrlWrapper(patchContactByIDController));
+contactsRouter.patch(
+  '/:id',
+  isVailidID,
+  validateBody(contactUpdateSchema),
+  ctrlWrapper(patchContactByIDController),
+);
 
-contactsRouter.delete('/:id', ctrlWrapper(deleteContactByIDController));
+contactsRouter.delete(
+  '/:id',
+  isVailidID,
+  ctrlWrapper(deleteContactByIDController),
+);
 
 export default contactsRouter;

@@ -9,7 +9,6 @@ export const addContact = (payload) => StudentCollection.create(payload);
 
 export const updateContactByID = async (_id, payload, options = {}) => {
   const result = await StudentCollection.findByIdAndUpdate(_id, payload, {
-    new: true,
     includeResultMetadata: true,
     ...options,
   });

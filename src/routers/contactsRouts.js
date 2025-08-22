@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import createHttpError from 'http-errors';
 import {
   getContactController,
   getContactByIDController,

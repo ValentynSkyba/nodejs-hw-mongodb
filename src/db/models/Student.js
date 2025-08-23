@@ -30,6 +30,14 @@ const studentSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
+export const contactSortFields = [
+  'name',
+  'phoneNumber',
+  'email',
+  'isFavourite',
+  'contactType',
+];
+
 studentSchema.post('save', handleSaveError);
 
 studentSchema.pre('findOneAndUpdate', setUpdateSettings);

@@ -82,3 +82,6 @@ export const refreshUserSession = async ({ refreshToken, sessionId }) => {
     ...newSession,
   });
 };
+
+export const logoutUser = (sessionId) =>
+  SessionCollection.findOneAndDelete({ _id: sessionId });

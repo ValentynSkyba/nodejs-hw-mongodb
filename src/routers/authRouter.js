@@ -6,6 +6,7 @@ import {
   registerController,
   loginController,
   refreshSessionController,
+  logoutUserController,
 } from '../controllers/authControllers.js';
 
 const authRouter = Router();
@@ -19,5 +20,7 @@ authRouter.post(
 authRouter.post('/login', validateBody(loginSchema), loginController);
 
 authRouter.post('/refresh', refreshSessionController);
+
+authRouter.post('/logout', logoutUserController);
 
 export default authRouter;

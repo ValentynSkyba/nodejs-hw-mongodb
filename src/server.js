@@ -6,6 +6,7 @@ import contactsRouter from './routers/contactsRouts.js';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHeandler } from './middleware/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 // console.log(process.env);
 
@@ -17,6 +18,7 @@ export const startServer = () => {
 
   app.use(cors());
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use(logger);
 

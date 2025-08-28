@@ -15,10 +15,12 @@ import {
 } from '../validation/contactsSchemas.js';
 
 import { validateBody } from '../middleware/validateBody.js';
-
 import { isVailidID } from '../middleware/isVailidID.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get('/', getContactController);
 

@@ -20,7 +20,7 @@ export const authenticate = async (req, res, next) => {
     throw createHttpError(401, 'Session not found');
   }
 
-  if (new DataTransfer(session.accessTokenValidUntil) < new Date()) {
+  if (new Date(session.accessTokenValidUntil) < new Date()) {
     throw createHttpError(401, 'Access token expired');
   }
 
@@ -28,6 +28,8 @@ export const authenticate = async (req, res, next) => {
   if (!user) {
     throw createHttpError(401, 'User not found');
   }
+
+  req.user = user;
 
   next();
 };

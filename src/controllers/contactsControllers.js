@@ -1,9 +1,10 @@
 import {
   getContacts,
-  getContactByID,
+  // getContactByID,
   addContact,
-  updateContactByID,
-  deleteContactByID,
+  updateContact,
+  deleteContact,
+  getContact,
 } from '../services/contactServices.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -16,7 +17,16 @@ export const getContactController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query, contactSortFields);
   const filters = parseContactFilters(req.query);
-  const data = await getContacts({ page, perPage, sortBy, sortOrder, filters });
+  const { _id: userId } = req.user;
+
+  const data = await getContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filters: { ...filters, userId },
+  });
+
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -25,13 +35,18 @@ export const getContactController = async (req, res) => {
 };
 
 export const getContactByIDController = async (req, res) => {
+  const { id: _id } = req.params;
+  const { _id: userId } = req.user;
   // console.log(req.params);
 
-  const contactId = req.params.contactId;
-  const data = await getContactByID(contactId);
+  // -Old version without autoriazation
+  // const contactId = req.params.contactId;
+  // const data = await getContactByID(contactId);
+
+  const data = await getContact({ _id, userId });
 
   if (!data) {
-    throw createHttpError(404, `Student with ${contactId} not found`);
+    throw createHttpError(404, `Student with ${_id} not found`);
     //     ------ without library
     // const error = new Error(`Student with ${contactId} not found`);
     // error.status = 404;
@@ -44,14 +59,16 @@ export const getContactByIDController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: `Successfully find student with id:${contactId}`,
+    message: `Successfully find student with id:${_id}`,
     data,
   });
 };
 
 export const addContactController = async (req, res) => {
-  //
-  const data = await addContact(req.body);
+  // console.log(req.user);
+  const { _id: userId } = req.user;
+
+  const data = await addContact({ ...req.body, userId });
 
   res
     .status(201)
@@ -59,40 +76,47 @@ export const addContactController = async (req, res) => {
 };
 
 export const upsertContactByIDController = async (req, res) => {
-  const { id } = req.params;
-  const { isNew, data } = await updateContactByID(id, req.body, {
-    upsert: true,
-  });
+  const { id: _id } = req.params;
+  const { _id: userId } = req.user;
+  const { isNew, data } = await updateContact(
+    { _id, userId },
+    { ...req.body, userId },
+    {
+      upsert: true,
+    },
+  );
 
   const status = isNew ? 201 : 200;
 
   res.status(status).json({
     status,
-    message: `Successfully upsert contact with id=${id}`,
+    message: `Successfully upsert contact with id=${_id}`,
     data,
   });
 };
 
 export const patchContactByIDController = async (req, res) => {
-  const { id } = req.params;
-  const result = await updateContactByID(id, req.body);
+  const { id: _id } = req.params;
+  const { _id: userId } = req.user;
+  const result = await updateContact({ _id, userId }, req.body);
 
   if (!result) {
-    throw createHttpError(404, `Student with ${id} not found`);
+    throw createHttpError(404, `Student with ${_id} not found`);
   }
 
   res.json({
     status: 200,
-    message: `Successfully update contact with id=${id}`,
+    message: `Successfully update contact with id=${_id}`,
     data: result.data,
   });
 };
 
 export const deleteContactByIDController = async (req, res) => {
-  const { id } = req.params;
-  const data = await deleteContactByID(id);
+  const { id: _id } = req.params;
+  const { _id: userId } = req.user;
+  const data = await deleteContact({ _id, userId });
   if (!data) {
-    throw createHttpError(404, `Student with ${id} not found`);
+    throw createHttpError(404, `Student with ${_id} not found`);
   }
 
   res.status(204).send();

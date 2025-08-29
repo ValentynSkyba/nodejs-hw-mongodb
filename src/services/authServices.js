@@ -10,6 +10,7 @@ import {
   accessTokenLifeTime,
   refreshTokenLifeTime,
 } from '../constants/auth-constants.js';
+import mongoose from 'mongoose';
 
 const createSession = () => ({
   accessToken: randomBytes(30).toString('base64'),
@@ -65,7 +66,10 @@ export const loginUser = async ({ email, password }) => {
 
 export const refreshUserSession = async ({ refreshToken, sessionId }) => {
   // console.log(refreshToken);
-  const oldSession = await findSession({ refreshToken, _id: sessionId });
+  const oldSession = await findSession({
+    refreshToken,
+    _id: new mongoose.Types.ObjectId(sessionId),
+  });
   if (!oldSession) {
     throw createHttpError(401, 'Session not found');
   }

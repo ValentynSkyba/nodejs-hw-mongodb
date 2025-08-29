@@ -12,6 +12,10 @@ export const getContacts = async ({
 
   const contactQuery = StudentCollection.find();
 
+  if (filters.userId) {
+    contactQuery.where('userId').equals(filters.userId);
+  }
+
   if (filters.contactType) {
     contactQuery.where('contactType').equals(filters.contactType);
   }
@@ -36,13 +40,16 @@ export const getContacts = async ({
   };
 };
 
-export const getContactByID = (contactId) =>
-  StudentCollection.findById(contactId);
+// -Old version without autoriazation
+// export const getContactByID = (contactId) =>
+//   StudentCollection.findById(contactId);
+
+export const getContact = (query) => StudentCollection.findOne(query);
 
 export const addContact = (payload) => StudentCollection.create(payload);
 
-export const updateContactByID = async (_id, payload, options = {}) => {
-  const result = await StudentCollection.findByIdAndUpdate(_id, payload, {
+export const updateContact = async (query, payload, options = {}) => {
+  const result = await StudentCollection.findByIdAndUpdate(query, payload, {
     includeResultMetadata: true,
     ...options,
   });
@@ -53,6 +60,19 @@ export const updateContactByID = async (_id, payload, options = {}) => {
 
   return { isNew, data: result.value };
 };
+// OLD
+// export const updateContactByID = async (_id, payload, options = {}) => {
+//   const result = await StudentCollection.findByIdAndUpdate(_id, payload, {
+//     includeResultMetadata: true,
+//     ...options,
+//   });
 
-export const deleteContactByID = (_id) =>
-  StudentCollection.findByIdAndDelete(_id);
+//   if (!result || !result.value) return null;
+
+//   const isNew = Boolean(result.lastErrorObject.upserted);
+
+//   return { isNew, data: result.value };
+// };
+
+export const deleteContact = (query) =>
+  StudentCollection.findOneAndDelete(query);

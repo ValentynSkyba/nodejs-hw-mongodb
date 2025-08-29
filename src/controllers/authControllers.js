@@ -6,6 +6,9 @@ import {
 } from '../services/authServices.js';
 
 const setupSession = (res, session) => {
+  if (!session || !session._id) {
+    throw new Error('Session object is invalid');
+  }
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: session.refreshTokenValidUntil,

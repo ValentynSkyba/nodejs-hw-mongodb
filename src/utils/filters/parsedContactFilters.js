@@ -18,25 +18,9 @@ const parsedFavourite = (favourite) => {
   return undefined;
 };
 
-// ------------------------ DONT USE AS A FILTER ----------------------
-// const parsedNumber = (value) => {
-//   if (typeof value !== 'string') return;
-
-//   const parsedValue = parseInt(value);
-//   if (Number.isNaN(parsedValue)) return;
-
-//   return parsedValue;
-// };
-// ---------------------------------------------------------------------
-
 export const parseContactFilters = ({ contactType, isFavourite }) => {
   const type = parsedContactType(contactType);
   const favourite = parsedFavourite(isFavourite);
-
-  // ------------------------ DONT USE AS A FILTER ----------------------
-  // const parsedNumberMinExample = parsedNumber(minValue);
-  // const parsedNumberMaxExample = parsedNumber(maxValue);
-  // ---------------------------------------------------------------------
 
   return {
     contactType: type,

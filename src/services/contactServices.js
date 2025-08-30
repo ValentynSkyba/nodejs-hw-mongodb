@@ -10,11 +10,11 @@ export const getContacts = async ({
 }) => {
   const skip = (page - 1) * perPage;
 
-  const contactQuery = StudentCollection.find();
+  const contactQuery = StudentCollection.find({ userId: filters.userId });
 
-  if (filters.userId) {
-    contactQuery.where('userId').equals(filters.userId);
-  }
+  // if (filters.userId) {
+  //   contactQuery.where('userId').equals(filters.userId);
+  // }
 
   if (filters.contactType) {
     contactQuery.where('contactType').equals(filters.contactType);
@@ -40,16 +40,12 @@ export const getContacts = async ({
   };
 };
 
-// -Old version without autoriazation
-// export const getContactByID = (contactId) =>
-//   StudentCollection.findById(contactId);
-
 export const getContact = (query) => StudentCollection.findOne(query);
 
 export const addContact = (payload) => StudentCollection.create(payload);
 
 export const updateContact = async (query, payload, options = {}) => {
-  const result = await StudentCollection.findByIdAndUpdate(query, payload, {
+  const result = await StudentCollection.findOneAndUpdate(query, payload, {
     includeResultMetadata: true,
     ...options,
   });
@@ -60,19 +56,6 @@ export const updateContact = async (query, payload, options = {}) => {
 
   return { isNew, data: result.value };
 };
-// OLD
-// export const updateContactByID = async (_id, payload, options = {}) => {
-//   const result = await StudentCollection.findByIdAndUpdate(_id, payload, {
-//     includeResultMetadata: true,
-//     ...options,
-//   });
-
-//   if (!result || !result.value) return null;
-
-//   const isNew = Boolean(result.lastErrorObject.upserted);
-
-//   return { isNew, data: result.value };
-// };
 
 export const deleteContact = (query) =>
   StudentCollection.findOneAndDelete(query);

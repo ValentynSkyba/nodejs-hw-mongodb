@@ -31,16 +31,6 @@ export const registerController = async (req, res) => {
 
 export const loginController = async (req, res) => {
   const session = await loginUser(req.body);
-  // console.log(session);
-  // res.cookie('refreshToken', {
-  //   httpOnly: true,
-  //   expires: session.refreshTokenValidUntil,
-  // });
-
-  // res.cookie('sessionId', {
-  //   httpOnly: true,
-  //   expires: session.refreshTokenValidUntil,
-  // });
 
   setupSession(res, session);
 
@@ -54,18 +44,7 @@ export const loginController = async (req, res) => {
 };
 
 export const refreshSessionController = async (req, res) => {
-  // console.log(req.cookies);
   const session = await refreshUserSession(req.cookies);
-
-  // res.cookie('refreshToken', {
-  //   httpOnly: true,
-  //   expires: session.refreshTokenValidUntil,
-  // });
-
-  // res.cookie('sessionId', {
-  //   httpOnly: true,
-  //   expires: session.refreshTokenValidUntil,
-  // });
 
   setupSession(res, session);
 

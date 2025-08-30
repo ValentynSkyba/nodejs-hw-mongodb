@@ -37,24 +37,11 @@ export const getContactController = async (req, res) => {
 export const getContactByIDController = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: userId } = req.user;
-  // console.log(req.params);
-
-  // -Old version without autoriazation
-  // const contactId = req.params.contactId;
-  // const data = await getContactByID(contactId);
 
   const data = await getContact({ _id, userId });
 
   if (!data) {
     throw createHttpError(404, `Student with ${_id} not found`);
-    //     ------ without library
-    // const error = new Error(`Student with ${contactId} not found`);
-    // error.status = 404;
-    //     throw error;
-    // return res.status(404).json({
-    //   status: 404,
-    //   message: `Student with ${contactId} not found`,
-    // });
   }
 
   res.json({
@@ -65,7 +52,6 @@ export const getContactByIDController = async (req, res) => {
 };
 
 export const addContactController = async (req, res) => {
-  // console.log(req.user);
   const { _id: userId } = req.user;
 
   const data = await addContact({ ...req.body, userId });

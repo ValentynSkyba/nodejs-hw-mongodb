@@ -2,8 +2,6 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'node:crypto';
 
-// console.log(randomBytes(30).toString('base64'));
-
 import UserCollection from '../db/models/Users.js';
 import SessionCollection from '../db/models/Session.js';
 import {
@@ -49,23 +47,14 @@ export const loginUser = async ({ email, password }) => {
   await SessionCollection.findOneAndDelete({ userId: user._id });
 
   const session = createSession();
-  // Deleted (new fun)
-  // const accessToken = randomBytes(30).toString('base64');
-  // const refreshToken = randomBytes(30).toString('base64');
 
   return SessionCollection.create({
     userId: user._id,
     ...session,
-    // Deleted (new fun)
-    // accessToken,
-    // refreshToken,
-    // accessTokenValidUntil: new Date(Date.now() + accessTokenLifeTime),
-    // refreshTokenValidUntil: new Date(Date.now() + refreshTokenLifeTime),
   });
 };
 
 export const refreshUserSession = async ({ refreshToken, sessionId }) => {
-  // console.log(refreshToken);
   const oldSession = await findSession({
     refreshToken,
     _id: new mongoose.Types.ObjectId(sessionId),

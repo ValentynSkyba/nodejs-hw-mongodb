@@ -1,6 +1,8 @@
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { randomBytes } from 'node:crypto';
+import mongoose from 'mongoose';
 
 import UserCollection from '../db/models/Users.js';
 import SessionCollection from '../db/models/Session.js';
@@ -8,7 +10,9 @@ import {
   accessTokenLifeTime,
   refreshTokenLifeTime,
 } from '../constants/auth-constants.js';
-import mongoose from 'mongoose';
+import { SMTP } from '../constants/index.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendEmail } from '../utils/sendMail.js';
 
 const createSession = () => ({
   accessToken: randomBytes(30).toString('base64'),
@@ -78,3 +82,27 @@ export const refreshUserSession = async ({ refreshToken, sessionId }) => {
 
 export const logoutUser = (sessionId) =>
   SessionCollection.findOneAndDelete({ _id: sessionId });
+
+export const requestResetToken = async (email) => {
+  const user = await UserCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    getEnvVar('JWT_SECRET'),
+    {
+      expiresIn: '15m',
+    },
+  );
+
+  await sendEmail({
+    from: getEnvVar(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+  });
+};

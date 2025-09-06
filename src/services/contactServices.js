@@ -1,5 +1,11 @@
 import StudentCollection from '../db/models/Student.js';
 import { calcPaginationData } from '../utils/countPaginationData.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+
+import { saveFileToPublicDir } from '../utils/saveFileToPublicDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudnary.js';
+
+const enableCloundinary = getEnvVar('ENABLE_CLOUDINARY') === 'true';
 
 export const getContacts = async ({
   page = 1,
@@ -11,10 +17,6 @@ export const getContacts = async ({
   const skip = (page - 1) * perPage;
 
   const contactQuery = StudentCollection.find({ userId: filters.userId });
-
-  // if (filters.userId) {
-  //   contactQuery.where('userId').equals(filters.userId);
-  // }
 
   if (filters.contactType) {
     contactQuery.where('contactType').equals(filters.contactType);
@@ -42,9 +44,19 @@ export const getContacts = async ({
 
 export const getContact = (query) => StudentCollection.findOne(query);
 
-export const addContact = (payload) => StudentCollection.create(payload);
+export const addContact = async (payload, file) => {
+  let photo = null;
+  if (file) {
+    if (enableCloundinary) {
+      photo = await saveFileToCloudinary(file);
+    } else {
+      photo = await saveFileToPublicDir(file);
+    }
+  }
+  return StudentCollection.create({ ...payload, photo });
+};
 
-export const updateContact = async (query, payload, options = {}) => {
+export const updateContact = async (query, { payload }, options = {}) => {
   const result = await StudentCollection.findOneAndUpdate(query, payload, {
     includeResultMetadata: true,
     ...options,

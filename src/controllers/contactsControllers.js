@@ -52,13 +52,16 @@ export const getContactByIDController = async (req, res) => {
 };
 
 export const addContactController = async (req, res) => {
-  const { _id: userId } = req.user;
+  console.log(req.file);
+  console.log(req);
 
-  const data = await addContact({ ...req.body, userId });
+  // const { _id: userId } = req.user;
 
-  res
-    .status(201)
-    .json({ status: 201, message: 'Successfully add contact', data });
+  // const data = await addContact({ ...req.body, userId });
+
+  // res
+  //   .status(201)
+  //   .json({ status: 201, message: 'Successfully add contact', data });
 };
 
 export const upsertContactByIDController = async (req, res) => {

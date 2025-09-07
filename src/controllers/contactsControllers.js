@@ -11,6 +11,9 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { contactSortFields } from '../db/models/Student.js';
 import { parseContactFilters } from '../utils/filters/parsedContactFilters.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveFileToPublicDir } from '../utils/saveFileToPublicDir.js';
 
 export const getContactController = async (req, res) => {
   // console.log(req.query);
@@ -85,19 +88,41 @@ export const upsertContactByIDController = async (req, res) => {
 };
 
 export const patchContactByIDController = async (req, res) => {
+  console.log(req.file);
+  console.log(req);
   const { id: _id } = req.params;
   const { _id: userId } = req.user;
-  const result = await updateContact({ _id, userId }, req.body);
+  const photo = req.file;
 
-  if (!result) {
-    throw createHttpError(404, `Student with ${_id} not found`);
+  let photoUrl;
+
+  try {
+    if (photo) {
+      if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+        photoUrl = await saveFileToCloudinary(photo);
+      } else {
+        photoUrl = await saveFileToPublicDir(photo);
+      }
+    }
+
+    const updateData = { ...req.body };
+    if (photoUrl) updateData.photo = photoUrl;
+
+    const result = await updateContact({ _id, userId }, updateData);
+
+    if (!result || !result.data) {
+      throw createHttpError(404, `Student with ${_id} not found`);
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: `Successfully updated contact with id=${_id}`,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error('Error in patchContactByIDController:', err);
+    throw createHttpError(500, err.message || 'Internal server error');
   }
-
-  res.json({
-    status: 200,
-    message: `Successfully update contact with id=${_id}`,
-    data: result.data,
-  });
 };
 
 export const deleteContactByIDController = async (req, res) => {

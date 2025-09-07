@@ -3,7 +3,7 @@ import { calcPaginationData } from '../utils/countPaginationData.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 
 import { saveFileToPublicDir } from '../utils/saveFileToPublicDir.js';
-import { saveFileToCloudinary } from '../utils/saveFileToCloudnary.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 const enableCloundinary = getEnvVar('ENABLE_CLOUDINARY') === 'true';
 
@@ -56,17 +56,15 @@ export const addContact = async (payload, file) => {
   return StudentCollection.create({ ...payload, photo });
 };
 
-export const updateContact = async (query, { payload }, options = {}) => {
+export const updateContact = async (query, payload, options = {}) => {
   const result = await StudentCollection.findOneAndUpdate(query, payload, {
-    includeResultMetadata: true,
+    new: true,
     ...options,
   });
 
-  if (!result || !result.value) return null;
+  if (!result) return null;
 
-  const isNew = Boolean(result.lastErrorObject.upserted);
-
-  return { isNew, data: result.value };
+  return { data: result };
 };
 
 export const deleteContact = (query) =>

@@ -36,16 +36,16 @@ contactsRouter.post(
 
 contactsRouter.put(
   '/:id',
-  upload.single('photo'),
   isVailidID,
+  upload.single('photo'),
   validateBody(contactAddSchema),
   ctrlWrapper(upsertContactByIDController),
 );
 
 contactsRouter.patch(
   '/:id',
-  upload.single('photo'),
   isVailidID,
+  upload.single('photo'),
   validateBody(contactUpdateSchema),
   ctrlWrapper(patchContactByIDController),
 );

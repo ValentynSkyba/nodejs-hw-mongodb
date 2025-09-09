@@ -1,0 +1,59 @@
+import { Router } from 'express';
+import {
+  getContactController,
+  getContactByIDController,
+  addContactController,
+  upsertContactByIDController,
+  patchContactByIDController,
+  deleteContactByIDController,
+} from '../controllers/contactsControllers.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
+import {
+  contactAddSchema,
+  contactUpdateSchema,
+} from '../validation/contactsSchemas.js';
+
+import { validateBody } from '../middleware/validateBody.js';
+import { isVailidID } from '../middleware/isVailidID.js';
+import { authenticate } from '../middleware/authenticate.js';
+import { upload } from '../middleware/upload.js';
+
+const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
+
+contactsRouter.get('/', getContactController);
+
+contactsRouter.get('/:id', isVailidID, ctrlWrapper(getContactByIDController));
+
+contactsRouter.post(
+  '/',
+  upload.single('photo'),
+  validateBody(contactAddSchema),
+  ctrlWrapper(addContactController),
+);
+
+contactsRouter.put(
+  '/:id',
+  isVailidID,
+  upload.single('photo'),
+  validateBody(contactAddSchema),
+  ctrlWrapper(upsertContactByIDController),
+);
+
+contactsRouter.patch(
+  '/:id',
+  isVailidID,
+  upload.single('photo'),
+  validateBody(contactUpdateSchema),
+  ctrlWrapper(patchContactByIDController),
+);
+
+contactsRouter.delete(
+  '/:id',
+  isVailidID,
+  ctrlWrapper(deleteContactByIDController),
+);
+
+export default contactsRouter;

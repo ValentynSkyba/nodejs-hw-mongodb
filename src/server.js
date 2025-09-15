@@ -27,13 +27,11 @@ export const startServer = () => {
 
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', ...swaggerDocs());
 
   app.use(notFoundHandler);
-
   app.use(errorHeandler);
-
-  app.use('/uploads', express.static(UPLOAD_DIR));
-  app.use('/api-docs', swaggerDocs());
 
   const port = Number(process.env.PORT) || 3000;
 

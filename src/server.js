@@ -7,7 +7,8 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHeandler } from './middleware/errorHandler.js';
 import cookieParser from 'cookie-parser';
-import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import { swaggerDocs } from './middleware/swaggerDocs.js';
+import { UPLOAD_DIR } from './constants/index.js';
 
 // console.log(process.env);
 

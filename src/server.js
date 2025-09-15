@@ -7,6 +7,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHeandler } from './middleware/errorHandler.js';
 import cookieParser from 'cookie-parser';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 // console.log(process.env);
 
@@ -29,6 +30,9 @@ export const startServer = () => {
   app.use(notFoundHandler);
 
   app.use(errorHeandler);
+
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   const port = Number(process.env.PORT) || 3000;
 

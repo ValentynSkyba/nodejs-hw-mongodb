@@ -44,12 +44,12 @@ export const getContactByIDController = async (req, res) => {
   const data = await getContact({ _id, userId });
 
   if (!data) {
-    throw createHttpError(404, `Student with ${_id} not found`);
+    throw createHttpError(404, `Contact with ${_id} not found`);
   }
 
   res.json({
     status: 200,
-    message: `Successfully find student with id:${_id}`,
+    message: `Successfully find contact with id:${_id}`,
     data,
   });
 };
@@ -111,7 +111,7 @@ export const patchContactByIDController = async (req, res) => {
     const result = await updateContact({ _id, userId }, updateData);
 
     if (!result || !result.data) {
-      throw createHttpError(404, `Student with ${_id} not found`);
+      throw createHttpError(404, `Contact with ${_id} not found`);
     }
 
     res.status(200).json({
@@ -130,7 +130,7 @@ export const deleteContactByIDController = async (req, res) => {
   const { _id: userId } = req.user;
   const data = await deleteContact({ _id, userId });
   if (!data) {
-    throw createHttpError(404, `Student with ${_id} not found`);
+    throw createHttpError(404, `Contact with ${_id} not found`);
   }
 
   res.status(204).send();

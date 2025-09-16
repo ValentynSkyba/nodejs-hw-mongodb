@@ -9,8 +9,8 @@ info:
 tags:
   - name: Contacts
     description: Operations about contacts.
-  - name: Auth
-    description: Auth operations.
+  # - name: Auth
+  #   description: Auth operations.
 servers:
   - url: https://nodejs-hw-mongodb-5-s2oa.onrender.com
   - url: http://localhost:3000

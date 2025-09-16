@@ -3,6 +3,7 @@ required:
   - _id
   - name
   - phoneNumber
+  - contactType
   - userId
   - createdAt
   - updatedAt

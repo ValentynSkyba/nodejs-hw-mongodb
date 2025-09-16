@@ -1,4 +1,4 @@
-description: Bad request due to invalid request body, incorrect contact ID format, or missing required session ID.
+description: Bad request due to invalid request body.
 content:
   application/json:
     schema:

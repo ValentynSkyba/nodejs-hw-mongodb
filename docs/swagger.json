@@ -11,6 +11,9 @@
   },
   "servers": [
     {
+      "url": "https://nodejs-hw-mongodb-5-s2oa.onrender.com"
+    },
+    {
       "url": "http://localhost:3000"
     },
     {
@@ -192,7 +195,8 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "phoneNumber"
+                  "phoneNumber",
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
@@ -508,6 +512,7 @@
           "_id",
           "name",
           "phoneNumber",
+          "contactType",
           "userId",
           "createdAt",
           "updatedAt"
@@ -575,7 +580,7 @@
     },
     "responses": {
       "400": {
-        "description": "Bad request due to invalid request body, incorrect contact ID format, or missing required session ID.",
+        "description": "Bad request due to invalid request body.",
         "content": {
           "application/json": {
             "schema": {
